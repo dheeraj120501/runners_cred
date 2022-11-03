@@ -1,10 +1,66 @@
-import ContactManager from "./Manager/index.js";
+import { ContactManager, ContactManagerTrie } from "./Manager/index.js";
 
-const manager = new ContactManager();
+// const manager = new ContactManager();
+
+// manager.addContactMany([
+//   {
+//     firstName: "Dheeraj",
+//     lastName: "Bisht",
+//     phone: "+918273205016",
+//   },
+//   {
+//     firstName: "Robin",
+//     lastName: "",
+//     phone: "+918284695111",
+//   },
+//   {
+//     firstName: "Mukesh",
+//     lastName: "Bisht",
+//     phone: "+918273205016",
+//   },
+//   {
+//     firstName: "Robor",
+//     lastName: "Bisht",
+//     phone: "+918273205016",
+//   },
+// ]);
+
+// const res = manager.searchContact({
+//   field: "FIRST_NAME",
+//   search: "dheeraj",
+//   partial: true,
+// });
+
+// console.log(res);
+
+const manager = new ContactManagerTrie();
+
+manager.addContactMany([
+  {
+    firstName: "Dheeraj",
+    lastName: "Bisht",
+    phone: "+918273205016",
+  },
+  {
+    firstName: "Robin",
+    lastName: "",
+    phone: "+918284695111",
+  },
+  {
+    firstName: "Mukesh",
+    lastName: "Bisht",
+    phone: "+918273205016",
+  },
+  {
+    firstName: "Robor",
+    lastName: "Bisht",
+    phone: "+918273205016",
+  },
+]);
 
 const res = manager.searchContact({
   field: "LAST_NAME",
-  search: "B",
+  search: "bi",
   partial: true,
 });
 
