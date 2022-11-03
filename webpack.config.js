@@ -5,8 +5,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "index.js",
-    library: "$",
-    libraryTarget: "umd",
   },
   module: {
     rules: [

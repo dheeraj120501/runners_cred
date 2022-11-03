@@ -1,1 +1,3 @@
-console.log("project setup");
+import { msg } from "./Manager/addContact.js";
+
+console.log(msg);
