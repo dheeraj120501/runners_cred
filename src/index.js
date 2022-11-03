@@ -1,3 +1,4 @@
-import { msg } from "./Manager/addContact.js";
+import { searchContact } from "./Manager/index.js";
 
-console.log(msg);
+const res = searchContact({ field: "PHONE", search: "91", partial: true });
+console.log(res);
