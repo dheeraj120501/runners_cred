@@ -1,4 +1,4 @@
 import { FIELDS } from "./constants.js";
-import { sendRes } from "./helpers.js";
+import { sendRes, Trie } from "./helpers.js";
 
-export { FIELDS, sendRes };
+export { FIELDS, sendRes, Trie };
