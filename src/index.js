@@ -1,4 +1,11 @@
-import { searchContact } from "./Manager/index.js";
+import ContactManager from "./Manager/index.js";
 
-const res = searchContact({ field: "PHONE", search: "91", partial: true });
+const manager = new ContactManager();
+
+const res = manager.searchContact({
+  field: "LAST_NAME",
+  search: "B",
+  partial: true,
+});
+
 console.log(res);
