@@ -1,16 +1,16 @@
 import { v4 as uuidv4 } from "uuid";
 import Papa from "papaparse";
+import TrieSearch from "trie-search/src/TrieSearch.js";
 
 import Contact from "../Contact/index.js";
-import { Trie } from "../utils/helpers.js";
 import { FIELDS, sendRes } from "../utils/index.js";
 class ContactManager {
   #contacts = {};
 
   #filterTable = {
-    firstName: new Trie(),
-    lastName: new Trie(),
-    // phone: new Trie(),
+    firstName: new TrieSearch(),
+    lastName: new TrieSearch(),
+    phone: new TrieSearch(),
   };
 
   constructor() {
@@ -28,10 +28,10 @@ class ContactManager {
   addContact({ firstName, phone, lastName = "" } = {}) {
     const id = uuidv4();
     let newContact = new Contact({ firstName, lastName, phone, id });
-    const prevContacts = this.#contacts;
-    this.#contacts = { ...prevContacts, [id]: newContact };
-    this.#filterTable.firstName.insert(firstName, id);
-    this.#filterTable.lastName.insert(lastName, id);
+    this.#contacts[id] = newContact;
+
+    this.#filterTable.firstName.map(firstName, id);
+    this.#filterTable.lastName.map(lastName, id);
 
     return this;
   }
@@ -60,6 +60,11 @@ class ContactManager {
     });
   }
 
+  addContactFromCsvSync(csv) {
+    const { data } = Papa.parse(csv);
+    return data;
+  }
+
   /**
    *
    * @param {field, search="", partial = false} param0
@@ -72,8 +77,7 @@ class ContactManager {
           "Invalid Field make sure the field is valid and non empty."
         );
       }
-
-      const ids = this.#filterTable[FIELDS[field]].search(search, partial);
+      const ids = this.#filterTable[FIELDS[field]].search(search);
 
       const res = ids.map((id) => {
         return this.#contacts[id];

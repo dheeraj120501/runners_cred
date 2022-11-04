@@ -1,91 +1,31 @@
-class TrieNode {
-  constructor(char, id) {
-    this.children = [];
-    this.ids = [id];
-    for (let i = 0; i < 26; i++) {
-      this.children[i] = null;
-    }
-    this.isEndWord = false;
-    this.char = char;
-  }
-
-  addId(id) {
-    this.ids = [...this.ids, id];
-  }
-
-  markAsLeaf() {
-    this.isEndWord = true;
-  }
-
-  unMarkAsLeaf() {
-    this.isEndWord = false;
-  }
-
-  isLeaf() {
-    return this.isEndWord;
-  }
-}
-
-export class Trie {
-  constructor() {
-    this.root = new TrieNode("");
-  }
-
-  getIndex(t) {
-    return t.charCodeAt(0) - "a".charCodeAt(0);
-  }
-
-  insert(key, id) {
-    if (key === "" || key === null) {
-      return;
-    }
-
-    key = key.toLowerCase();
-    let currentNode = this.root;
-    let index = 0;
-
-    for (let level = 0; level < key.length; level++) {
-      index = this.getIndex(key[level]);
-
-      if (currentNode.children[index] == null) {
-        currentNode.children[index] = new TrieNode(key[level], id);
-      } else {
-        currentNode.children[index].addId(id);
-      }
-      currentNode = currentNode.children[index];
-    }
-
-    currentNode.markAsLeaf();
-  }
-
-  search(key, partial = false) {
-    if (key === "" || key === null) {
-      return [];
-    }
-
-    key = key.toLowerCase();
-    let currentNode = this.root;
-    let index = 0;
-
-    for (let level = 0; level < key.length; level++) {
-      index = this.getIndex(key[level]);
-
-      if (currentNode.children[index] == null) {
-        return [];
-      }
-
-      currentNode = currentNode.children[index];
-    }
-
-    if (!partial && !currentNode.isLeaf()) {
-      return [];
-    }
-
-    return currentNode.ids ? currentNode.ids : [];
-  }
-}
+import { performance } from "perf_hooks";
 
 export const sendRes = (data) => ({
   total: data.length,
   data,
 });
+
+const formatTime = (ms) => {
+  let time;
+  const sec = ms / 1000;
+  const min = sec / 60;
+  const hr = min / 60;
+
+  if (Math.floor(hr)) return `${hr} hr`;
+  if (Math.floor(min)) return `${min} min`;
+  if (Math.floor(sec)) return `${sec} sec`;
+  return `${ms} ms`;
+};
+
+export const analyzeFunc = ({
+  func,
+  args = [],
+  funcName = "This function",
+} = {}) => {
+  var startTime = performance.now();
+  const res = func(...args);
+  var endTime = performance.now();
+
+  console.log(`${funcName} took ${formatTime(endTime - startTime)}`);
+  return res;
+};

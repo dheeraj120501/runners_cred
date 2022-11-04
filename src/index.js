@@ -1,61 +1,74 @@
 import * as fs from "fs";
 import ContactManager from "./Manager/index.js";
+import { analyzeFunc } from "./utils/index.js";
 
 const manager = new ContactManager();
 
-// manager.addContactMany([
-//   {
-//     firstName: "Dheeraj",
-//     lastName: "Bisht",
-//     phone: "+918273205016",
-//   },
-//   {
-//     firstName: "Robin",
-//     lastName: "",
-//     phone: "+918-284695111",
-//   },
-//   {
-//     firstName: "Mukesh",
-//     lastName: "Bisht",
-//     phone: "+918273205016",
-//   },
-//   {
-//     firstName: "Robor",
-//     lastName: "Bisht",
-//     phone: "+918273205016",
-//   },
-// ]);
+const csv = fs.readFileSync("src/data/data.csv", "utf8");
 
-// const res = manager.searchContact({
-//   field: "LAST_NAME",
-//   search: "bi",
-//   partial: true,
+// Asynchronous Code
+
+// const callback = (data) => {
+//   for (let i = 0; i < data.length; i++) {
+//     const firstName = data[i][0];
+//     const phone = [
+//       data[i][2].split(" ")[0],
+//       data[i][2].split(" ")[1].split("-").join(""),
+//     ].join("");
+//     const lastName = data[i][1];
+
+//     manager.addContact({
+//       firstName,
+//       phone,
+//       lastName,
+//     });
+//   }
+
+//   const res = analyzeFunc({
+//     func: manager.searchContact.bind(manager),
+//     args: [{ field: "LAST_NAME", search: "Windler" }],
+//     funcName: "Search Contacts",
+//   });
+//   console.log(res);
+
+//   // const res = manager.searchContact({ field: "LAST_NAME", search: "Windler" });
+//   // console.log(res);
+// };
+
+// analyzeFunc({
+//   func: manager.addContactFromCsv,
+//   args: [csv, callback],
+//   funcName: "Add Contact from csv",
 // });
 
+// Synchronous Code
+const data = analyzeFunc({
+  func: manager.addContactFromCsvSync,
+  args: [csv],
+  funcName: "Add Contact from csv sync",
+});
+
+for (let i = 0; i < data.length; i++) {
+  const firstName = data[i][0];
+  const phone = [
+    data[i][2].split(" ")[0],
+    data[i][2].split(" ")[1].split("-").join(""),
+  ].join("");
+  const lastName = data[i][1];
+
+  manager.addContact({
+    firstName,
+    phone,
+    lastName,
+  });
+}
+
+const res = analyzeFunc({
+  func: manager.searchContact.bind(manager),
+  args: [{ field: "LAST_NAME", search: "Windler" }],
+  funcName: "Search Contacts",
+});
+console.log(res);
+
+// const res = manager.searchContact({ field: "LAST_NAME", search: "Windler" });
 // console.log(res);
-
-const callback = (data) => {
-  for (let i = 0; i < data.length; i++) {
-    const firstName = data[i][0];
-    const phone = [
-      data[i][2].split(" ")[0],
-      data[i][2].split(" ")[1].split("-").join(""),
-    ].join("");
-    const lastName = data[i][1];
-
-    // console.log({
-    //   firstName,
-    //   phone,
-    //   lastName,
-    // });
-
-    manager.addContact({
-      firstName,
-      phone,
-      lastName,
-    });
-  }
-};
-
-const data = fs.readFileSync("src/data/data.csv", "utf8");
-manager.addContactFromCsv(data, callback);
