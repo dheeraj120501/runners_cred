@@ -112,7 +112,7 @@ class ContactManager {
       });
 
       if (!partial) {
-        res.filter((r) => r[field] === search);
+        res = res.filter((r) => r[field] === search);
       }
 
       return sendRes(res);
