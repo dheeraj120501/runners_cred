@@ -29,9 +29,11 @@ class ContactManager {
     const id = uuidv4();
     let newContact = new Contact({ firstName, lastName, phone, id });
     this.#contacts[id] = newContact;
+    // console.log(phone.slice(1));
 
     this.#filterTable.firstName.map(firstName, id);
     this.#filterTable.lastName.map(lastName, id);
+    this.#filterTable.phone.map(phone.slice(1), id);
 
     return this;
   }
@@ -55,14 +57,41 @@ class ContactManager {
   addContactFromCsv(csv, callback) {
     Papa.parse(csv, {
       complete: function ({ data }) {
-        callback(data);
+        for (let i = 0; i < data.length; i++) {
+          const firstName = data[i][0];
+          const phone = [
+            data[i][2].split(" ")[0],
+            data[i][2].split(" ")[1].split("-").join(""),
+          ].join("");
+          const lastName = data[i][1];
+          const manager = new ContactManager();
+          manager.addContact({
+            firstName,
+            phone,
+            lastName,
+          });
+        }
+        callback();
       },
     });
   }
 
   addContactFromCsvSync(csv) {
     const { data } = Papa.parse(csv);
-    return data;
+    for (let i = 0; i < data.length; i++) {
+      const firstName = data[i][0];
+      const phone = [
+        data[i][2].split(" ")[0],
+        data[i][2].split(" ")[1].split("-").join(""),
+      ].join("");
+      const lastName = data[i][1];
+      const manager = new ContactManager();
+      manager.addContact({
+        firstName,
+        phone,
+        lastName,
+      });
+    }
   }
 
   /**
@@ -72,12 +101,12 @@ class ContactManager {
    */
   searchContact({ field, search = "", partial = false } = {}) {
     try {
-      if (!Object.keys(FIELDS).includes(field)) {
+      if (!Object.values(FIELDS).includes(field)) {
         throw new Error(
           "Invalid Field make sure the field is valid and non empty."
         );
       }
-      const ids = this.#filterTable[FIELDS[field]].search(search);
+      const ids = this.#filterTable[field].search(search);
 
       const res = ids.map((id) => {
         return this.#contacts[id];
