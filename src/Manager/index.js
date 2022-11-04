@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
+import Papa from "papaparse";
 
 import Contact from "../Contact/index.js";
 import { Trie } from "../utils/helpers.js";
 import { FIELDS, sendRes } from "../utils/index.js";
-
 class ContactManager {
   #contacts = {};
 
@@ -26,13 +26,10 @@ class ContactManager {
    * @returns ContactManager
    */
   addContact({ firstName, phone, lastName = "" } = {}) {
-    firstName = firstName.toLowerCase();
-    lastName = lastName.toLowerCase();
     const id = uuidv4();
     let newContact = new Contact({ firstName, lastName, phone, id });
     const prevContacts = this.#contacts;
     this.#contacts = { ...prevContacts, [id]: newContact };
-
     this.#filterTable.firstName.insert(firstName, id);
     this.#filterTable.lastName.insert(lastName, id);
 
@@ -41,7 +38,7 @@ class ContactManager {
 
   addContactMany(contacts) {
     try {
-      if (Object.getPrototypeOf(contacts).constructor !== Array) {
+      if (!(contacts instanceof Array)) {
         throw new Error("You must pass a list of Contacts");
       }
       if (!contacts.length) {
@@ -53,6 +50,14 @@ class ContactManager {
     } catch (err) {
       console.log(err.message);
     }
+  }
+
+  addContactFromCsv(csv, callback) {
+    Papa.parse(csv, {
+      complete: function ({ data }) {
+        callback(data);
+      },
+    });
   }
 
   /**
