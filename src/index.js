@@ -34,7 +34,7 @@ analyzeFunc({
 
 const res = analyzeFunc({
   func: manager.searchContact.bind(manager),
-  args: [{ field: FIELDS.PHONE, search: "23" }],
+  args: [{ field: FIELDS.FIRST_NAME, search: "Ely" }],
   funcName: "Search Contacts",
 });
 

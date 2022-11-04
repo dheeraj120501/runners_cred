@@ -38,21 +38,21 @@ class ContactManager {
     return this;
   }
 
-  addContactMany(contacts) {
-    try {
-      if (!(contacts instanceof Array)) {
-        throw new Error("You must pass a list of Contacts");
-      }
-      if (!contacts.length) {
-        throw new Error("Incoming list must contain atleast one Contact");
-      }
-      contacts.map((contact) => {
-        this.addContact(contact);
-      });
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
+  // addContactMany(contacts) {
+  //   try {
+  //     if (!(contacts instanceof Array)) {
+  //       throw new Error("You must pass a list of Contacts");
+  //     }
+  //     if (!contacts.length) {
+  //       throw new Error("Incoming list must contain atleast one Contact");
+  //     }
+  //     contacts.map((contact) => {
+  //       this.addContact(contact);
+  //     });
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // }
 
   addContactFromCsv(csv, callback) {
     Papa.parse(csv, {
@@ -64,8 +64,7 @@ class ContactManager {
             data[i][2].split(" ")[1].split("-").join(""),
           ].join("");
           const lastName = data[i][1];
-          const manager = new ContactManager();
-          manager.addContact({
+          this.addContact({
             firstName,
             phone,
             lastName,
@@ -111,6 +110,10 @@ class ContactManager {
       const res = ids.map((id) => {
         return this.#contacts[id];
       });
+
+      if (!partial) {
+        res.filter((r) => r[field] === search);
+      }
 
       return sendRes(res);
     } catch (err) {
